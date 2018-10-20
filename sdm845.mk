@@ -41,11 +41,16 @@ ENABLE_AB ?= true
 
 TARGET_KERNEL_VERSION := 4.9
 
-TARGET_USES_NQ_NFC := true
+TARGET_USES_NQ_NFC := false
 ifeq ($(TARGET_USES_NQ_NFC),true)
 # Flag to enable and support NQ3XX chipsets
 NQ3XX_PRESENT := true
 endif
+
+PRODUCT_PACKAGES += NfcNci \
+                    libnfc_nci_jni \
+                    libnfc-nci \
+                    Tag
 
 # default is nosdcard, S/W button enabled in resource
 PRODUCT_CHARACTERISTICS := nosdcard
@@ -78,11 +83,11 @@ ifneq ($(TARGET_DISABLE_DASH), true)
     PRODUCT_BOOT_JARS += qcmediaplayer
 endif
 
-ifneq ($(strip $(QCPATH)),)
-    PRODUCT_BOOT_JARS += WfdCommon
-endif
+#ifneq ($(strip $(QCPATH)),)
+#    PRODUCT_BOOT_JARS += WfdCommon
+#endif
 
-PRODUCT_BOOT_JARS += vendor.qti.voiceprint-V1.0-java
+#PRODUCT_BOOT_JARS += vendor.qti.voiceprint-V1.0-java
 
 # Video platform properties file
 PRODUCT_COPY_FILES += hardware/qcom/media/conf_files/sdm845/system_properties.xml:$(TARGET_COPY_OUT_VENDOR)/etc/system_properties.xml
@@ -305,3 +310,8 @@ TARGET_MOUNT_POINTS_SYMLINKS := false
 ifeq ($(ENABLE_VENDOR_IMAGE), true)
  VENDOR_SECURITY_PATCH := 2018-06-05
 endif
+
+TARGET_COMPILE_WITH_MSM_KERNEL := true
+
+$(call inherit-product-if-exists, device/qcom/sdm845/device-vendor.mk)
+$(call inherit-product-if-exists, vendor/oneplus/prebuilts.mk)
